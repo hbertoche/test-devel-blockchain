@@ -99,9 +99,12 @@ GET    /tasks/:id             # Buscar tarefa por ID
 PATCH  /tasks/:id             # Atualizar tarefa
 DELETE /tasks/:id             # Excluir tarefa
 PATCH  /tasks/:id/toggle      # Alternar status da tarefa
+```
+
+WIP: 
 GET    /tasks/export          # Exportar tarefas (JSON)
 POST   /tasks/import          # Importar tarefas
-```
+
 
 ### 🔍 Parâmetros de Filtro
 ```http
