@@ -1,0 +1,6 @@
+requirements.md
+.env
+/backend/.env
+/frontend/.env
+/frontend/node_modules
+/backend/node_modules
