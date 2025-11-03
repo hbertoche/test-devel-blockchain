@@ -202,35 +202,82 @@ export class TasksService {
   }
 
   async exportTasks(userId?: number): Promise<Task[]> {
-    return this.findAll(userId);
+    this.logger.log(`Exportando tarefas para usuário: ${userId}`);
+    
+    try {
+      const tasks = await this.findAll(userId);
+      this.logger.log(`${tasks.length} tarefas exportadas com sucesso`);
+      return tasks;
+    } catch (error) {
+      this.logger.error(`Erro ao exportar tarefas: ${error.message}`);
+      throw error;
+    }
   }
 
-  async importTasks(tasks: any[], userId?: number): Promise<{ imported: number; errors: number; total: number }> {
+  async importTasks(tasks: any[], userId?: number): Promise<{ imported: number; errors: number; total: number; details: string[] }> {
+    this.logger.log(`Iniciando importação de ${tasks.length} tarefas para usuário: ${userId}`);
+    
     const total = tasks.length;
     let imported = 0;
     let errors = 0;
+    const details: string[] = [];
 
-    for (const taskData of tasks) {
+    // Validar se é um array
+    if (!Array.isArray(tasks)) {
+      throw new Error('Dados inválidos: esperado um array de tarefas');
+    }
+
+    for (const [index, taskData] of tasks.entries()) {
       try {
-        // Validate required fields
-        if (!taskData.title || typeof taskData.title !== 'string') {
+        // Validações detalhadas
+        if (!taskData || typeof taskData !== 'object') {
           errors++;
+          details.push(`Linha ${index + 1}: Dados da tarefa inválidos`);
+          continue;
+        }
+
+        if (!taskData.title || typeof taskData.title !== 'string' || taskData.title.trim().length === 0) {
+          errors++;
+          details.push(`Linha ${index + 1}: Título é obrigatório e deve ser texto`);
+          continue;
+        }
+
+        if (taskData.title.length > 255) {
+          errors++;
+          details.push(`Linha ${index + 1}: Título muito longo (máximo 255 caracteres)`);
+          continue;
+        }
+
+        if (taskData.description && typeof taskData.description !== 'string') {
+          errors++;
+          details.push(`Linha ${index + 1}: Descrição deve ser texto`);
+          continue;
+        }
+
+        if (taskData.description && taskData.description.length > 1000) {
+          errors++;
+          details.push(`Linha ${index + 1}: Descrição muito longa (máximo 1000 caracteres)`);
           continue;
         }
 
         const createTaskDto: CreateTaskDto = {
-          title: taskData.title,
-          description: taskData.description || ''
+          title: taskData.title.trim(),
+          description: taskData.description ? taskData.description.trim() : ''
         };
 
         await this.create(createTaskDto, userId);
         imported++;
+        details.push(`Linha ${index + 1}: Tarefa '${taskData.title}' importada com sucesso`);
+        
       } catch (error) {
-        this.logger.error(`Error importing task: ${error.message}`);
+        this.logger.error(`Erro ao importar tarefa linha ${index + 1}: ${error.message}`);
         errors++;
+        details.push(`Linha ${index + 1}: Erro interno - ${error.message}`);
       }
     }
 
-    return { imported, errors, total };
+    this.logger.log(`Importação concluída: ${imported} sucessos, ${errors} erros de ${total} total`);
+    
+    return { imported, errors, total, details };
   }
 }
