@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { Task, CreateTaskRequest, UpdateTaskRequest, AuthResponse } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -22,7 +22,7 @@ api.interceptors.request.use((config) => {
 // Task API
 export const taskApi = {
   // Get all tasks with optional filters
-  getTasks: async (params?: { status?: string; search?: string }): Promise<Task[]> => {
+  getTasks: async (params?: { filter?: string; search?: string }): Promise<Task[]> => {
     const response = await api.get('/tasks', { params });
     return response.data;
   },
@@ -41,7 +41,7 @@ export const taskApi = {
 
   // Update task
   updateTask: async (id: number, task: UpdateTaskRequest): Promise<Task> => {
-    const response = await api.put(`/tasks/${id}`, task);
+    const response = await api.patch(`/tasks/${id}`, task);
     return response.data;
   },
 
@@ -79,10 +79,16 @@ export const authApi = {
 
   // Login user
   login: async (credentials: {
-    username: string;
+    email: string;
     password: string;
   }): Promise<AuthResponse> => {
     const response = await api.post('/auth/login', credentials);
+    return response.data;
+  },
+
+  // Get profile
+  getProfile: async (): Promise<any> => {
+    const response = await api.get('/auth/profile');
     return response.data;
   },
 };

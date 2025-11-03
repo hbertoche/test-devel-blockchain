@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Form, InputGroup, Badge, Dropdown } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Container, Row, Col, Card, Button, Form, InputGroup, Badge, Dropdown, Navbar } from 'react-bootstrap';
+import Icon from '@mdi/react';
+import { mdiLogout, mdiWeatherNight, mdiWeatherSunny, mdiPlus, mdiCog, mdiExport, mdiImport, mdiMagnify } from '@mdi/js';
 import { taskApi } from '../services/api';
 import { Task, TaskFilter } from '../types';
 import TaskItem from './TaskItem';
 import TaskForm from './TaskForm';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -14,16 +17,36 @@ const TaskList: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
 
+  // Carregamento inicial
   useEffect(() => {
     loadTasks();
-  }, [filter]);
+  }, []);
+
+  // Carrega tarefas imediatamente quando o filtro de status muda
+  useEffect(() => {
+    if (filter.status) {
+      loadTasks();
+    }
+  }, [filter.status]);
+
+  // Debounce para busca por texto
+  useEffect(() => {
+    if (filter.search !== '') {
+      const timeoutId = setTimeout(() => {
+        loadTasks();
+      }, 500); // 500ms de delay para busca
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [filter.search]);
 
   const loadTasks = async () => {
     try {
       setLoading(true);
       const params = {
-        status: filter.status !== 'all' ? filter.status : undefined,
+        filter: filter.status !== 'all' ? filter.status : undefined,
         search: filter.search || undefined,
       };
       const data = await taskApi.getTasks(params);
@@ -150,14 +173,31 @@ const TaskList: React.FC = () => {
       <Row className="mb-4">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
-            <h1 className="display-6">📋 Sistema de Tarefas</h1>
-            <div className="d-flex gap-2">
+            <div>
+              <h1 className="display-6">Sistema de Tarefas</h1>
+              <small className="text-muted">Olá, {user?.username || user?.email}!</small>
+            </div>
+            <div className="d-flex gap-2 align-items-center">
+              <Button 
+                variant="outline-secondary" 
+                size="sm"
+                onClick={logout}
+                title="Sair"
+              >
+                <Icon path={mdiLogout} size={0.8} className="me-1" />
+                Sair
+              </Button>
               <Button 
                 variant={theme === 'light' ? 'outline-dark' : 'outline-light'} 
                 size="sm"
                 onClick={toggleTheme}
               >
-                {theme === 'light' ? '🌙' : '☀️'}
+                <Icon 
+                  path={theme === 'light' ? mdiWeatherNight : mdiWeatherSunny} 
+                  size={0.8} 
+                  className="me-1"
+                />
+                {theme === 'light' ? 'Dark Theme' : 'Light Theme'}
               </Button>
             </div>
           </div>
@@ -212,9 +252,12 @@ const TaskList: React.FC = () => {
       <Row className="mb-4">
         <Col lg={8}>
           <InputGroup>
+            <InputGroup.Text>
+              <Icon path={mdiMagnify} size={0.8} />
+            </InputGroup.Text>
             <Form.Control
               type="text"
-              placeholder="🔍 Buscar tarefas..."
+              placeholder="Buscar tarefas..."
               value={filter.search}
               onChange={(e) => handleFilterChange({ search: e.target.value })}
             />
@@ -243,18 +286,23 @@ const TaskList: React.FC = () => {
             onClick={() => setShowForm(true)}
             className="flex-grow-1"
           >
-            ➕ Nova Tarefa
+            <Icon path={mdiPlus} size={0.8} className="me-1" />
+            Nova Tarefa
           </Button>
+          {/* 
+          TODO: Implementar funcionalidades de exportar/importar
           <Dropdown>
             <Dropdown.Toggle variant="outline-secondary" size="sm">
-              ⚙️
+              <Icon path={mdiCog} size={0.8} />
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={handleExportTasks}>
-                📤 Exportar
+                <Icon path={mdiExport} size={0.8} className="me-1" />
+                Exportar
               </Dropdown.Item>
               <Dropdown.Item as="label" htmlFor="import-file">
-                📥 Importar
+                <Icon path={mdiImport} size={0.8} className="me-1" />
+                Importar
                 <input
                   id="import-file"
                   type="file"
@@ -264,7 +312,7 @@ const TaskList: React.FC = () => {
                 />
               </Dropdown.Item>
             </Dropdown.Menu>
-          </Dropdown>
+          </Dropdown> */}
         </Col>
       </Row>
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
+import Icon from '@mdi/react';
+import { mdiPencil, mdiPlus } from '@mdi/js';
 import { Task } from '../types';
 
 interface TaskFormProps {
@@ -85,7 +87,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onSave, onCancel }) => {
     <Modal show={true} onHide={onCancel} size="lg" onKeyDown={handleKeyDown}>
       <Modal.Header closeButton>
         <Modal.Title>
-          {task ? '✏️ Editar Tarefa' : '➕ Nova Tarefa'}
+          <Icon 
+            path={task ? mdiPencil : mdiPlus} 
+            size={0.8} 
+            className="me-2"
+          />
+          {task ? 'Editar Tarefa' : 'Nova Tarefa'}
         </Modal.Title>
       </Modal.Header>
       
