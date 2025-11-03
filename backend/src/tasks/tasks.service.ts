@@ -52,7 +52,7 @@ export class TasksService {
       const params: any[] = [];
 
       if (userId) {
-        query += ` AND (userId IS NULL OR userId = ?)`;
+        query += ` AND userId = ?`;
         params.push(userId);
       }
 

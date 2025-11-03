@@ -10,20 +10,26 @@ import {
   ParseIntPipe,
   ValidationPipe,
   HttpCode,
-  HttpStatus
+  HttpStatus,
+  UseGuards,
+  Request
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiParam,
-  ApiQuery
+  ApiQuery,
+  ApiBearerAuth
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
 @ApiTags('tasks')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('api/tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
@@ -32,8 +38,8 @@ export class TasksController {
   @ApiOperation({ summary: 'Criar nova tarefa' })
   @ApiResponse({ status: 201, description: 'Tarefa criada com sucesso' })
   @ApiResponse({ status: 400, description: 'Dados inválidos' })
-  async create(@Body(ValidationPipe) createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
+  async create(@Body(ValidationPipe) createTaskDto: CreateTaskDto, @Request() req) {
+    return this.tasksService.create(createTaskDto, req.user.id);
   }
 
   @Get()
@@ -42,10 +48,11 @@ export class TasksController {
   @ApiQuery({ name: 'filter', required: false, enum: ['all', 'completed', 'pending'] })
   @ApiQuery({ name: 'search', required: false, description: 'Busca por título ou descrição' })
   async findAll(
+    @Request() req,
     @Query('filter') filter?: string,
     @Query('search') search?: string
   ) {
-    return this.tasksService.findAll(undefined, filter, search);
+    return this.tasksService.findAll(req.user.id, filter, search);
   }
 
   @Get(':id')
