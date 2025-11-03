@@ -14,9 +14,10 @@ export class TasksService {
     const { title, description = '' } = createTaskDto;
     
     return new Promise((resolve, reject) => {
+      const db = this.databaseService.getDatabase();
       const query = `INSERT INTO tasks (title, description, userId) VALUES (?, ?, ?)`;
       
-      this.databaseService.getDatabase().run(query, [title, description, userId || null], function(err) {
+      db.run(query, [title, description, userId || null], function(err) {
         if (err) {
           reject(err);
           return;
@@ -25,7 +26,7 @@ export class TasksService {
         const taskId = this.lastID;
         const selectQuery = `SELECT * FROM tasks WHERE id = ?`;
         
-        this.get(selectQuery, [taskId], (selectErr: any, row: any) => {
+        db.get(selectQuery, [taskId], (selectErr: any, row: any) => {
           if (selectErr || !row) {
             reject(selectErr || new NotFoundException('Tarefa não encontrada'));
             return;
@@ -68,7 +69,8 @@ export class TasksService {
 
       query += ` ORDER BY createdAt DESC`;
 
-      this.databaseService.getDatabase().all(query, params, (err: any, rows: any[]) => {
+      const db = this.databaseService.getDatabase();
+      db.all(query, params, (err: any, rows: any[]) => {
         if (err) {
           reject(err);
           return;
@@ -99,7 +101,8 @@ export class TasksService {
         params.push(userId);
       }
 
-      this.databaseService.getDatabase().get(query, params, (err: any, row: any) => {
+      const db = this.databaseService.getDatabase();
+      db.get(query, params, (err: any, row: any) => {
         if (err) {
           reject(err);
           return;
@@ -157,7 +160,8 @@ export class TasksService {
         params.push(userId);
       }
 
-      this.databaseService.getDatabase().run(query, params, (err: any) => {
+      const db = this.databaseService.getDatabase();
+      db.run(query, params, (err: any) => {
         if (err) {
           reject(err);
           return;
@@ -180,7 +184,8 @@ export class TasksService {
         params.push(userId);
       }
 
-      this.databaseService.getDatabase().run(query, params, function(err: any) {
+      const db = this.databaseService.getDatabase();
+      db.run(query, params, function(err: any) {
         if (err) {
           reject(err);
           return;
