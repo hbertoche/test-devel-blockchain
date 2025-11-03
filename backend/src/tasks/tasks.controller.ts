@@ -30,7 +30,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 @ApiTags('tasks')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/tasks')
+@Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
@@ -53,6 +53,13 @@ export class TasksController {
     @Query('search') search?: string
   ) {
     return this.tasksService.findAll(req.user.id, filter, search);
+  }
+
+  @Get('export')
+  @ApiOperation({ summary: 'Exportar tarefas em JSON' })
+  @ApiResponse({ status: 200, description: 'Arquivo JSON com as tarefas' })
+  async exportTasks(@Request() req) {
+    return this.tasksService.exportTasks(req.user.id);
   }
 
   @Get(':id')
@@ -94,5 +101,12 @@ export class TasksController {
   async toggle(@Param('id', ParseIntPipe) id: number) {
     const task = await this.tasksService.findOne(id);
     return this.tasksService.update(id, { completed: !task.completed });
+  }
+
+  @Post('import')
+  @ApiOperation({ summary: 'Importar tarefas de arquivo JSON' })
+  @ApiResponse({ status: 201, description: 'Tarefas importadas com sucesso' })
+  async importTasks(@Body() body: { tasks: any[] }, @Request() req) {
+    return this.tasksService.importTasks(body.tasks, req.user.id);
   }
 }

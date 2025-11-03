@@ -200,4 +200,37 @@ export class TasksService {
       });
     });
   }
+
+  async exportTasks(userId?: number): Promise<Task[]> {
+    return this.findAll(userId);
+  }
+
+  async importTasks(tasks: any[], userId?: number): Promise<{ imported: number; errors: number; total: number }> {
+    const total = tasks.length;
+    let imported = 0;
+    let errors = 0;
+
+    for (const taskData of tasks) {
+      try {
+        // Validate required fields
+        if (!taskData.title || typeof taskData.title !== 'string') {
+          errors++;
+          continue;
+        }
+
+        const createTaskDto: CreateTaskDto = {
+          title: taskData.title,
+          description: taskData.description || ''
+        };
+
+        await this.create(createTaskDto, userId);
+        imported++;
+      } catch (error) {
+        this.logger.error(`Error importing task: ${error.message}`);
+        errors++;
+      }
+    }
+
+    return { imported, errors, total };
+  }
 }

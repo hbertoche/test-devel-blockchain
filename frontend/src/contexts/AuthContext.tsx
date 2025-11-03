@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { User } from '../types';
+import { authApi } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
-  login: (user: User, token: string) => void;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -25,11 +27,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return localStorage.getItem('token');
   });
 
-  const login = (userData: User, userToken: string) => {
-    setUser(userData);
-    setToken(userToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', userToken);
+  const login = async (email: string, password: string): Promise<void> => {
+    try {
+      const response = await authApi.login({ email, password });
+      
+      const userData: User = {
+        id: response.user.id,
+        username: response.user.username,
+        email: response.user.email
+      };
+      
+      setUser(userData);
+      setToken(response.token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', response.token);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const register = async (name: string, email: string, password: string): Promise<void> => {
+    try {
+      const response = await authApi.register({ username: name, email, password });
+      
+      const userData: User = {
+        id: response.user.id,
+        username: response.user.username,
+        email: response.user.email
+      };
+      
+      setUser(userData);
+      setToken(response.token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('token', response.token);
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = () => {
@@ -45,6 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     token,
     login,
+    register,
     logout,
     isAuthenticated,
   };

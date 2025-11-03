@@ -1,99 +1,204 @@
-# Sistema de Tarefas (To-Do List) ✅
+# 📋 Sistema de Tarefas (To-Do List)
 
-Um sistema completo de gerenciamento de tarefas desenvolvido com React, Node.js e TypeScript seguindo todos os requisitos do desafio.
+Um sistema completo de gerenciamento de tarefas desenvolvido com **React + NestJS + TypeScript**, com autenticação JWT, temas personalizáveis e interface moderna.
 
-## 🎯 Sobre o Desafio
+## 🚀 Funcionalidades
 
-**Objetivo**: Criar uma aplicação de lista de tarefas completa
+### ✅ Gerenciamento de Tarefas
+- **CRUD completo**: Criar, visualizar, editar e excluir tarefas
+- **Filtros inteligentes**: Todas, pendentes, concluídas
+- **Busca em tempo real**: Por título ou descrição (com debounce)
+- **Status dinâmico**: Marcar/desmarcar como concluída
+- **Timestamps**: Criação e última atualização
 
-### ✅ Requisitos Implementados
+### 🔐 Sistema de Autenticação
+- **Registro de usuários**: Cadastro com validação
+- **Login seguro**: Autenticação via JWT
+- **Proteção de rotas**: Acesso apenas para usuários logados
+- **Perfil do usuário**: Informações do usuário logado
 
-- **CRUD completo de tarefas** ✅
-- **Filtros (todas, pendentes, concluídas)** ✅  
-- **Busca por título/descrição** ✅
-- **Persistência local (SQLite)** ✅
-- **Interface responsiva** ✅
-- **Validação de formulários** ✅
+### 🎨 Interface Moderna
+- **Design responsivo**: Bootstrap 5 + React Bootstrap
+- **Temas personalizáveis**: Claro e escuro
+- **Ícones modernos**: Material Design Icons (MDI)
+- **UX otimizada**: Debounce na busca, loading states, alerts
 
-### ✅ Tecnologias Utilizadas (Conforme Especificado)
+### 📊 Recursos Avançados
+- **Export/Import**: Backup e restauração de tarefas (JSON)
+- **Contadores**: Total, pendentes, concluídas
+- **Validação robusta**: Frontend e backend
+- **Tratamento de erros**: Feedback visual para o usuário
 
-- **Frontend**: Vite + React + Bootstrap ✅
-- **Backend**: Node.js 22 + **NestJS** (Framework Enterprise) ✅
-- **Code**: TypeScript ✅
+## 🛠️ Tecnologias Utilizadas
 
-### ✅ Funcionalidades Extras Implementadas
+### Backend
+- **NestJS**: Framework Node.js enterprise-grade
+- **TypeScript**: Tipagem estática e orientação a objetos
+- **SQLite**: Banco de dados leve e eficiente
+- **JWT**: Autenticação segura com tokens
+- **Bcrypt**: Criptografia de senhas
+- **Swagger**: Documentação automática da API
 
-- **Testes frontend e backend** ✅
-- **Importar/Exportar dados** ✅
-- **Temas claro/escuro** ✅
-- **Cadastro/Login de usuários** ✅
+### Frontend
+- **React 18**: Biblioteca de interface moderna
+- **TypeScript**: Desenvolvimento type-safe
+- **Vite**: Build tool rápido e moderno
+- **React Bootstrap**: Componentes responsivos
+- **Axios**: Cliente HTTP para API calls
+- **Material Design Icons**: Iconografia consistente
 
-## 🛠️ Quick Start
+## 🚀 Como Executar
 
-### 1. Backend NestJS (Terminal 1):
+### Pré-requisitos
+- Node.js 18+
+- npm ou yarn
+
+### 1. Clone o repositório
+```bash
+git clone <repository-url>
+cd test-devel-blockchain
+```
+
+### 2. Backend (Terminal 1)
 ```bash
 cd backend
 npm install
 npm run start:dev
 ```
-**API rodará em**: http://localhost:3001
-**Swagger Docs**: http://localhost:3001/api/docs
+**🌐 API**: http://localhost:3000  
+**📚 Swagger**: http://localhost:3000/api
 
-### 2. Frontend (Terminal 2)
+### 3. Frontend (Terminal 2)
 ```bash
 cd frontend  
 npm install
 npm run dev
 ```
-**App rodará em**: http://localhost:5173
+**🎨 App**: http://localhost:5173
+
+### 4. Primeiro Acesso
+1. Acesse http://localhost:5173
+2. Clique em "Criar conta" 
+3. Cadastre-se e faça login
+4. Comece a gerenciar suas tarefas!
 
 ## 📊 API Endpoints
 
-### Tarefas
-- `GET /api/tasks` - Listar tarefas (com filtros)
-- `POST /api/tasks` - Criar nova tarefa
-- `PUT /api/tasks/:id` - Atualizar tarefa
-- `DELETE /api/tasks/:id` - Excluir tarefa
-- `GET /api/tasks/export` - Exportar tarefas
-- `POST /api/tasks/import` - Importar tarefas
-
-### Autenticação
-- `POST /api/auth/register` - Registrar usuário
-- `POST /api/auth/login` - Login de usuário
-
-## 🏆 Critérios de Avaliação Atendidos
-
-✅ **Qualidade do código** - TypeScript, estrutura organizada
-✅ **Qualidade dos Testes** - Jest + Vitest, cobertura completa  
-✅ **Organização da estrutura** - Separação clara frontend/backend
-✅ **Tratamento de erros** - Middleware dedicado, validações robustas
-✅ **UX/UI e responsividade** - Bootstrap, tema escuro/claro
-✅ **Documentação (README)** - Documentação detalhada
-
-## 📁 Estrutura do Projeto
-
+### 🔐 Autenticação
+```http
+POST /auth/register    # Registrar novo usuário
+POST /auth/login       # Login do usuário  
+GET  /auth/profile     # Perfil do usuário logado
 ```
-project/
-├── backend/               # Node.js + TypeScript + SQLite
-│   ├── src/
-│   │   ├── controllers/   # Lógica de negócio
-│   │   ├── database/      # SQLite configuration  
-│   │   ├── middleware/    # Error handling
-│   │   ├── models/        # TypeScript types
-│   │   ├── routes/        # API endpoints
-│   │   └── server.ts      # Express server
-│   └── package.json
-├── frontend/              # React + TypeScript + Bootstrap
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── contexts/      # Estado global (Theme, Auth)
-│   │   ├── services/      # API integration
-│   │   ├── types/         # TypeScript interfaces
-│   │   └── main.tsx       # App entry point
-│   └── package.json
-└── README.md
+
+### 📋 Tarefas (Requer Autenticação)
+```http
+GET    /tasks                 # Listar tarefas (com filtros)
+POST   /tasks                 # Criar nova tarefa
+GET    /tasks/:id             # Buscar tarefa por ID
+PATCH  /tasks/:id             # Atualizar tarefa
+DELETE /tasks/:id             # Excluir tarefa
+PATCH  /tasks/:id/toggle      # Alternar status da tarefa
+GET    /tasks/export          # Exportar tarefas (JSON)
+POST   /tasks/import          # Importar tarefas
 ```
+
+### 🔍 Parâmetros de Filtro
+```http
+GET /tasks?filter=pending     # Tarefas pendentes
+GET /tasks?filter=completed   # Tarefas concluídas
+GET /tasks?search=texto       # Busca por texto
+```
+
+## �️ Arquitetura do Sistema
+
+### Backend (NestJS)
+```
+backend/
+├── src/
+│   ├── auth/           # Módulo de autenticação
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   ├── jwt-auth.guard.ts
+│   │   └── dto/
+│   ├── users/          # Módulo de usuários
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   └── dto/
+│   ├── tasks/          # Módulo de tarefas
+│   │   ├── tasks.controller.ts
+│   │   ├── tasks.service.ts
+│   │   └── dto/
+│   ├── database/       # Configuração SQLite
+│   └── main.ts         # Bootstrap da aplicação
+```
+
+### Frontend (React)
+```
+frontend/
+├── src/
+│   ├── components/     # Componentes React
+│   │   ├── TaskList.tsx
+│   │   ├── TaskItem.tsx
+│   │   ├── TaskForm.tsx
+│   │   ├── AuthPage.tsx
+│   │   └── ProtectedRoute.tsx
+│   ├── contexts/       # Estado global
+│   │   ├── AuthContext.tsx
+│   │   └── ThemeContext.tsx
+│   ├── services/       # Integração com API
+│   │   └── api.ts
+│   ├── types/          # Interfaces TypeScript
+│   └── App.tsx
+```
+
+## 🎨 Principais Funcionalidades
+
+### Interface do Usuário
+- **Dashboard intuitivo**: Visão geral com contadores de tarefas
+- **Busca inteligente**: Debounce de 500ms para otimizar performance
+- **Filtros rápidos**: Todas, Pendentes, Concluídas
+- **Tema adaptável**: Alternância entre modo claro e escuro
+- **Feedback visual**: Loading states, alertas, confirmações
+
+### Experiência do Usuário
+- **Autenticação fluida**: Login/registro com validação em tempo real
+- **Gestão de tarefas**: Criar, editar, excluir com confirmações
+- **Status dinâmico**: Toggle de conclusão com um clique
+- **Exportação**: Backup completo das tarefas em JSON
+- **Importação**: Restauração de dados com validação
+
+## 🔧 Scripts Disponíveis
+
+### Backend
+```bash
+npm run start:dev    # Desenvolvimento com hot-reload
+npm run start:prod   # Produção
+npm run build        # Build para produção
+npm run test         # Executar testes
+```
+
+### Frontend
+```bash
+npm run dev          # Servidor de desenvolvimento
+npm run build        # Build para produção
+npm run preview      # Preview da build
+npm run test         # Executar testes
+```
+
+## 📋 Checklist de Funcionalidades
+
+- ✅ CRUD completo de tarefas
+- ✅ Filtros e busca em tempo real
+- ✅ Autenticação JWT segura
+- ✅ Interface responsiva e moderna
+- ✅ Temas claro/escuro
+- ✅ Export/Import de dados
+- ✅ Validação robusta
+- ✅ Tratamento de erros
+- ✅ Documentação completa
+- ✅ TypeScript em todo o projeto
 
 ---
 
-**🚀 Projeto completo pronto para execução e avaliação**
+**🚀 Sistema completo de gerenciamento de tarefas pronto para uso!**

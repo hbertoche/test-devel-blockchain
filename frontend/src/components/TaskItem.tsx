@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button, Form, Badge } from 'react-bootstrap';
+import Icon from '@mdi/react';
+import { mdiPencil, mdiDelete } from '@mdi/js';
 import { Task } from '../types';
 
 interface TaskItemProps {
@@ -62,14 +64,14 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggleComplete, onEdit, onD
                       size="sm"
                       onClick={handleEdit}
                     >
-                      ✏️
+                      <Icon path={mdiPencil} size={0.7} />
                     </Button>
                     <Button
                       variant="outline-danger"
                       size="sm"
                       onClick={handleDelete}
                     >
-                      🗑️
+                      <Icon path={mdiDelete} size={0.7} />
                     </Button>
                   </div>
                 </div>
