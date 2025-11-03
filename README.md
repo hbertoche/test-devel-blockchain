@@ -50,7 +50,7 @@ Um sistema completo de gerenciamento de tarefas desenvolvido com **React + NestJ
 ## 🚀 Como Executar
 
 ### Pré-requisitos
-- Node.js 18+
+- Node.js 22+
 - npm ou yarn
 
 ### 1. Clone o repositório
